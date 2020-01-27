@@ -1,0 +1,139 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://Player.gd" type="Script" id=1]
+
+[sub_resource type="RectangleShape2D" id=10]
+extents = Vector2( 10, 30 )
+
+[sub_resource type="RectangleShape2D" id=11]
+extents = Vector2( 10, 45 )
+
+[sub_resource type="Animation" id=2]
+resource_name = "grow"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Polygon2D:polygon")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ PoolVector2Array( -10, -30, 10, -30, 10, 30, -10, 30 ), PoolVector2Array( -10, -30, 10, -30, 10, 60, -10, 60 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("LargeCollision:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("SmallCollision:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "shrink"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Polygon2D:polygon")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ PoolVector2Array( -10, -30, 10, -30, 10, 60, -10, 60 ), PoolVector2Array( -10, -30, 10, -30, 10, 30, -10, 30 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("SmallCollision:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("LargeCollision:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+
+[sub_resource type="AnimationNodeAnimation" id=4]
+animation = "grow"
+
+[sub_resource type="AnimationNodeAnimation" id=5]
+animation = "shrink"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=6]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=7]
+
+[sub_resource type="AnimationNodeStateMachine" id=8]
+states/grow/node = SubResource( 4 )
+states/grow/position = Vector2( 342, 110 )
+states/shrink/node = SubResource( 5 )
+states/shrink/position = Vector2( 497, 110 )
+transitions = [ "grow", "shrink", SubResource( 6 ), "shrink", "grow", SubResource( 7 ) ]
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=9]
+
+[node name="Player" type="Area2D" groups=[
+"player",
+]]
+script = ExtResource( 1 )
+player = "player_two"
+move_speed = 200
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+polygon = PoolVector2Array( -10, -30, 10, -30, 10, 30, -10, 30 )
+
+[node name="SmallCollision" type="CollisionShape2D" parent="."]
+shape = SubResource( 10 )
+
+[node name="LargeCollision" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 15 )
+shape = SubResource( 11 )
+disabled = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/grow = SubResource( 2 )
+anims/shrink = SubResource( 3 )
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource( 8 )
+anim_player = NodePath("../AnimationPlayer")
+active = true
+parameters/playback = SubResource( 9 )
+
+[node name="SpeedTimer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+[connection signal="timeout" from="SpeedTimer" to="." method="_on_SpeedTimer_timeout"]

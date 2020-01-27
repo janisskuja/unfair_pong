@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Ball.gd" type="Script" id=1]
+[ext_resource path="res://Sounds/player_one.wav" type="AudioStream" id=2]
+[ext_resource path="res://Sounds/player_two.wav" type="AudioStream" id=3]
+[ext_resource path="res://Sounds/goal.wav" type="AudioStream" id=4]
+[ext_resource path="res://Sounds/wall.wav" type="AudioStream" id=5]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 10.1765, 9.91365 )
+
+[node name="Ball" type="Area2D" groups=[
+"ball",
+]]
+script = ExtResource( 1 )
+speed = 250
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+polygon = PoolVector2Array( -10, -10, 10, -10, 10, 10, -10, 10 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="Start" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[node name="SpeedTimer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[node name="player_one" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 2 )
+
+[node name="player_two" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+
+[node name="reset" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )
+
+[node name="wall" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
+[connection signal="area_entered" from="." to="." method="_on_Ball_area_entered"]
+[connection signal="timeout" from="Start" to="." method="_on_Start_timeout"]
+[connection signal="timeout" from="SpeedTimer" to="." method="_on_SpeedTimer_timeout"]

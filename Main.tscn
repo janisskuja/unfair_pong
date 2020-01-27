@@ -1,0 +1,117 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Main.gd" type="Script" id=1]
+[ext_resource path="res://Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Ball.tscn" type="PackedScene" id=3]
+[ext_resource path="res://HUD.gd" type="Script" id=4]
+[ext_resource path="res://Fonts/ShareTechMono-Regular.ttf" type="DynamicFontData" id=5]
+[ext_resource path="res://PlayerServe.gd" type="Script" id=6]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 10, 221.784 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 10, 221.784 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 42
+font_data = ExtResource( 5 )
+
+[node name="Main" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="PlayerOne" parent="." instance=ExtResource( 2 )]
+position = Vector2( 20, 220 )
+player = "player_one"
+
+[node name="PlayerTwo" parent="." instance=ExtResource( 2 )]
+position = Vector2( 780, 220 )
+
+[node name="Separator" type="Line2D" parent="."]
+position = Vector2( 400, 0 )
+points = PoolVector2Array( 0, 0, 0, 440 )
+width = 3.0
+default_color = Color( 1, 1, 1, 1 )
+texture_mode = 1057495566
+
+[node name="Ball" parent="." instance=ExtResource( 3 )]
+position = Vector2( 400, 220 )
+
+[node name="PlayerOneGoal" type="Area2D" parent="."]
+editor/display_folded = true
+position = Vector2( -20, 220 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerOneGoal"]
+shape = SubResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="PlayerTwoGoal" type="Area2D" parent="."]
+editor/display_folded = true
+position = Vector2( 820, 220 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerTwoGoal"]
+shape = SubResource( 2 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="HUD" type="Control" parent="CanvasLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 4 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/HUD"]
+anchor_right = 1.0
+margin_bottom = 14.0
+custom_constants/separation = 40
+alignment = 1
+
+[node name="PlayerOneScore" type="Label" parent="CanvasLayer/HUD/HBoxContainer"]
+margin_left = 357.0
+margin_right = 380.0
+margin_bottom = 49.0
+custom_fonts/font = SubResource( 3 )
+text = "0"
+align = 1
+valign = 1
+
+[node name="PlayerTwoScore" type="Label" parent="CanvasLayer/HUD/HBoxContainer"]
+margin_left = 420.0
+margin_right = 443.0
+margin_bottom = 49.0
+custom_fonts/font = SubResource( 3 )
+text = "9"
+align = 1
+valign = 1
+
+[node name="PlayerOneServe" type="Label" parent="CanvasLayer/HUD"]
+visible = false
+margin_left = 186.522
+margin_top = 195.482
+margin_right = 226.522
+margin_bottom = 244.482
+custom_fonts/font = SubResource( 3 )
+text = "3"
+script = ExtResource( 6 )
+
+[node name="Timer" type="Timer" parent="CanvasLayer/HUD/PlayerOneServe"]
+
+[node name="PlayerTwoServe" type="Label" parent="CanvasLayer/HUD"]
+visible = false
+margin_left = 598.662
+margin_top = 196.296
+margin_right = 638.662
+margin_bottom = 245.296
+custom_fonts/font = SubResource( 3 )
+text = "3"
+script = ExtResource( 6 )
+
+[node name="Timer" type="Timer" parent="CanvasLayer/HUD/PlayerTwoServe"]
+[connection signal="area_entered" from="PlayerOneGoal" to="." method="_on_PlayerOneGoal_area_entered"]
+[connection signal="area_entered" from="PlayerTwoGoal" to="." method="_on_PlayerTwoGoal_area_entered"]
+[connection signal="timeout" from="CanvasLayer/HUD/PlayerOneServe/Timer" to="CanvasLayer/HUD/PlayerOneServe" method="_on_Timer_timeout"]
+[connection signal="timeout" from="CanvasLayer/HUD/PlayerTwoServe/Timer" to="CanvasLayer/HUD/PlayerTwoServe" method="_on_Timer_timeout"]
