@@ -1,5 +1,5 @@
 # unfair_pong
-Another 2d pong game created in Godot
+Another 2d pong game created in Godot: https://jdzsk.itch.io/unfair-pong
 
 TriJam entry. This was made in MORE than 3h though, so I'm out of competition - still, I hope you enjoy it!
 
